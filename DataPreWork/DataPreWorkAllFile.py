@@ -1,31 +1,27 @@
-import cv2
-from os import path, listdir
-from os.path import isfile, join
+from DataPreWork import PreWork
 
-# InputImages
-inputDirectory = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\92images'
-allImageSource = [f for f in listdir(inputDirectory) if isfile(join(inputDirectory, f))]
+# Input Image Path
+inputDirectory_92 = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\92images'
+inputDirectory_118 = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\118images'
+
+# PreWorked Output Image Path
+outputDirectory_92 = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\PreWorkedImages\\92images'
+outputDirectory_118 = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\PreWorkedImages\\118images'
 
 # Gauss Blur kernel size
 dim = 3
 k_size = (dim, dim)
 
 # Edge Detecition Thresholds
-thre_1 = 100
-thre_2 = 150
+thresholds = 100, 150
 
 # Expected Size to resize
 size = (175, 175)
 
-outputDirectory = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\G_92images'
-
-# Read in GrayScale
-for item in allImageSource:
-    img = cv2.imread(inputDirectory + '\\' + item, 0)
-    # Resize Image if not expected
-    if size != (img.shape[0], img.shape[1]):
-        img = cv2.resize(src=img, dsize=size, interpolation=cv2.INTER_AREA)
-
-    gaus = cv2.GaussianBlur(img, k_size, cv2.BORDER_DEFAULT)
-    gaus_edged = cv2.Canny(gaus, thre_1, thre_2)
-    cv2.imwrite(outputDirectory + '\\G_' + item, gaus_edged)
+preWork = PreWork.PreWork(g_kernel=k_size, ex_size=size, thresholds=thresholds)
+# 92 image set prework
+preWork.ImagePreProcessing(input_path=inputDirectory_92,
+                           output_path=outputDirectory_92)
+# 118 image set prework
+preWork.ImagePreProcessing(input_path=inputDirectory_118,
+                           output_path=outputDirectory_118)
