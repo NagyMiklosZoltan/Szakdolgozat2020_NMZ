@@ -14,7 +14,6 @@ class PreWork:
         return s_dirs
 
     def preProcess(self, input_image):
-        # Read in GrayScale
         img = cv2.imread(input_image, 0)
         # Resize Image if not expected
         if (img.shape[0], img.shape[1]) != self.ex_size:
