@@ -8,6 +8,7 @@ class PreWork:
         self.g_kernel = g_kernel
         self.ex_size = ex_size
         self.thre_1, self.thre_2 = thresholds
+        self.image_count = 0
 
     def getSubDirectories(self, input_path):
         s_dirs = [dir for dir in listdir(input_path) if isdir(join(input_path, dir))]
@@ -32,6 +33,9 @@ class PreWork:
             if not isdir(output_path):
                 mkdir(output_path)
             cv2.imwrite(output_path + '\\' + item, img)
+            self.image_count += 1
+            print(self.image_count)
+
 
     def image_pre_processing(self, input_path, output_path):
         s_dirs = self.getSubDirectories(input_path=input_path)

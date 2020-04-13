@@ -48,8 +48,11 @@ vgg16 = applications.VGG16(
     include_top=False,
     weights="imagenet")
 
-for layer in vgg16.layers:
+print(vgg16.summary())
+
+for layer in vgg16.layers[:13]:
     layer.trainable = False
+
 
 model = Sequential([
     vgg16,
