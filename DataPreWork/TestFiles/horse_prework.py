@@ -1,13 +1,21 @@
 import cv2
 from os import listdir
 from os.path import isfile, join
+from DataPreWork import PreWork
 
-input_image = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation\\horses'
+input_image = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation\\'
 output_path = input_image
 
-imageSource = [join(input_image, f) for f in listdir(input_image) if isfile(join(input_image, f))]
+# Gauss Blur kernel size
+dim = 3
+k_size = (dim, dim)
+# Edge Detecition Thresholds
+thresholds = 100, 100
+# Expected Size to resize
+size = (175, 175)
 
-for item in imageSource:
-    img = cv2.imread(item)
-    img = cv2.resize(src=img, dsize=(175, 175), interpolation=cv2.INTER_AREA)
-    cv2.imwrite(item, img)
+preWork = PreWork.PreWork(g_kernel=k_size, ex_size=size, thresholds=thresholds)
+
+preWork.all_resize_local(input_path=input_image)
+
+
