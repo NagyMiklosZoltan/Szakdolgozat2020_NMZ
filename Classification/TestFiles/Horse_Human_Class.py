@@ -4,6 +4,14 @@ from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
 
+from DataPreWork.TestFiles.horse_prework import preworkAllDirs
+from Classification.TestFiles.PlotResults import plot_history
+
+# preworkAllDirs()
+print("*****************************************")
+print("PreWork Done!")
+print("*****************************************")
+
 # dimensions of our images.
 img_width, img_height = 175, 175
 
@@ -13,68 +21,63 @@ validation_data_dir = \
     'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation'
 
 data_gen = ImageDataGenerator(
-        rotation_range=40,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        rescale=1./255)
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    rescale=1. / 255)
 
-batch_size = 16
-epochs = 10
+batch_size = 8
+epochs = 100
 
 train_gen = data_gen.flow_from_directory(
     train_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='binary',
+    class_mode='categorical',
     shuffle=False,
     color_mode="rgb")
-
 
 valid_gen = data_gen.flow_from_directory(
     validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='binary',
+    class_mode='categorical',
     shuffle=False,
     color_mode="rgb")
-
 
 vgg16 = applications.VGG16(
     input_shape=(img_width, img_height, 3),
     include_top=False
-    )
+)
 
-
-for layer in vgg16.layers:
+for layer in vgg16.layers[:10]:
     layer.trainable = False
-
 
 model = Sequential([
     vgg16,
     Flatten(),
     Dense(2048, activation='relu'),
-    Dropout(0.5),
-    Dense(1024, activation='relu'),
-    Dropout(0.5),
+    Dropout(0.25),
     Dense(512, activation='relu'),
     Dropout(0.25),
-    Dense(1, activation='sigmoid')
+    Dense(3, activation='softmax')
 ])
 
 model.compile(optimizer='adam',
-              loss='binary_crossentropy', metrics=['accuracy'])
+              loss='categorical_crossentropy')
 
 print(model.summary())
 
-model.fit_generator(generator=train_gen,
-                    epochs=epochs,
-                    steps_per_epoch=batch_size,
-                    validation_data=valid_gen,
-                    validation_steps=(len(valid_gen) // batch_size)
-                    )
-
-
-
+x = model.fit_generator(generator=train_gen,
+                        epochs=epochs,
+                        steps_per_epoch=batch_size,
+                        validation_data=valid_gen,
+                        validation_steps=(len(valid_gen) // batch_size),
+                        verbose=2
+                        )
+print(x.history.keys())
+print(np.shape(x.history['accuracy']))
+plot_history(x)
 
 # nb_train_samples = 1000
 # nb_validation_samples = 256

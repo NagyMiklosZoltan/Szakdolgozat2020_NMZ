@@ -53,5 +53,6 @@ class PreWork:
             imageSource = [join(input, f) for f in listdir(input) if isfile(join(input, f))]
             for item in imageSource:
                 img = cv2.imread(item)
-                img = cv2.resize(src=img, dsize=self.ex_size, interpolation=cv2.INTER_AREA)
-                cv2.imwrite(item, img)
+                if (img.shape[0], img.shape[1]) != self.ex_size:
+                    img = cv2.resize(src=img, dsize=self.ex_size, interpolation=cv2.INTER_AREA)
+                    cv2.imwrite(item, img)
