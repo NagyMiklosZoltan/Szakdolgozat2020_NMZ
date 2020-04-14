@@ -13,13 +13,13 @@ validation_data_dir = \
     'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation'
 
 data_gen = ImageDataGenerator(
-        # rotation_range=40,
-        # width_shift_range=0.2,
-        # height_shift_range=0.2,
+        rotation_range=40,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
         rescale=1./255)
 
 batch_size = 16
-epochs = 50
+epochs = 10
 
 train_gen = data_gen.flow_from_directory(
     train_data_dir,
@@ -52,10 +52,12 @@ for layer in vgg16.layers:
 model = Sequential([
     vgg16,
     Flatten(),
+    Dense(2048, activation='relu'),
+    Dropout(0.5),
     Dense(1024, activation='relu'),
-    Dropout(0.1),
+    Dropout(0.5),
     Dense(512, activation='relu'),
-    Dropout(0.1),
+    Dropout(0.25),
     Dense(1, activation='sigmoid')
 ])
 
