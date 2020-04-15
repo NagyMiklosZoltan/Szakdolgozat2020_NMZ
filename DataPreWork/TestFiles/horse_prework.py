@@ -14,7 +14,7 @@ def preworkAllDirs():
     # Edge Detecition Thresholds
     thresholds = 100, 100
     # Expected Size to resize
-    size = (175, 175)
+    size = (64, 64)
 
     preWork = PreWork.PreWork(g_kernel=k_size, ex_size=size, thresholds=thresholds)
 
@@ -23,3 +23,4 @@ def preworkAllDirs():
     input_image = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation\\'
     preWork.all_resize_local(input_path=input_image)
 
+preworkAllDirs()

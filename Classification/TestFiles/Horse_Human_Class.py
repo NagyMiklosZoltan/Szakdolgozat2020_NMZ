@@ -76,7 +76,6 @@ x = model.fit_generator(generator=train_gen,
                         verbose=2
                         )
 print(x.history.keys())
-print(np.shape(x.history['accuracy']))
 plot_history(x)
 
 # nb_train_samples = 1000

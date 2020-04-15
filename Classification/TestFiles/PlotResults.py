@@ -5,22 +5,31 @@ import matplotlib.pyplot as plt
 
 def plot_history(history):
     # Get training and test loss histories
-    training_loss = history.history['loss']
-    test_loss = history.history['val_loss']
+    training_loss = history.history['loss'][2:]
+    test_loss = history.history['val_loss'][2:]
 
-    training_accuracy = history.history['accuracy']
-    test_accuracy = history.history['val_accuracy']
+    # training_accuracy = history.history['accuracy']
+    # test_accuracy = history.history['val_accuracy']
 
     # Create count of the number of epochs
     epoch_count = range(1, len(training_loss) + 1)
 
     # Visualize loss history
-    plt.plot(epoch_count, training_accuracy, 'r--')
-    plt.plot(epoch_count, test_accuracy, 'b-')
-    plt.legend(['Training accuracy', 'Test accuracy'])
+    plt.plot(epoch_count, training_loss, 'r--')
+    plt.plot(epoch_count, test_loss, 'b-')
+    plt.legend(['Training loss', 'Test loss'])
     plt.xlabel('Epoch')
-    plt.ylabel('accuracy')
+    plt.ylabel('loss')
+    plt.yscale('log')
     plt.show()
+
+    # # Visualize loss history
+    # plt.plot(epoch_count, training_accuracy, 'r--')
+    # plt.plot(epoch_count, test_accuracy, 'b-')
+    # plt.legend(['Training accuracy', 'Test acc'])
+    # plt.xlabel('Epoch')
+    # plt.ylabel('accuracy')
+    # plt.show()
 
 
     #
