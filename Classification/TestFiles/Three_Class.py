@@ -33,7 +33,7 @@ validation_data_dir = \
 # number of epochs to train top model
 epochs = 7  # this has been changed after multiple model run
 # batch size used by flow_from_directory and predict_generator
-batch_size = 248
+batch_size = 128
 
 # Loading vgc16 model
 vgg16 = applications.VGG16(include_top=False, weights='imagenet')
@@ -42,7 +42,7 @@ datagen = ImageDataGenerator(rescale=1. / 255)
 
 # __this can take an hour and half to run so only run it once.
 # once the npy files have been created, no need to run again. Convert this cell to a code cell to run.__
-
+#
 # start = datetime.datetime.now()
 #
 # generator = datagen.flow_from_directory(

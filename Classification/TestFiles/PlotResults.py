@@ -31,4 +31,5 @@ def plot_history(history):
     plt.legend(['Training accuracy', 'Test acc'])
     plt.xlabel('Epoch')
     plt.ylabel('accuracy')
+    plt.ylim(0.6, 1.0)
     plt.show()
