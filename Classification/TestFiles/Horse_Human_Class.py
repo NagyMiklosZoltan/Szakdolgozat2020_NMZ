@@ -4,7 +4,7 @@ from keras.models import Sequential
 from keras.layers import Dropout, Flatten, Dense
 from keras import applications
 
-from DataPreWork.TestFiles.horse_prework import preworkAllDirs
+from DataPreWork.TestFiles.reworkAllDirs import preworkAllDirs
 from Classification.TestFiles.PlotResults import plot_history
 
 # preworkAllDirs()

@@ -5,7 +5,7 @@ from DataPreWork import PreWork
 
 
 def preworkAllDirs():
-    input_image = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\train\\'
+    input_image = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\RawImages\CIFAR_Images\validation'
     output_path = input_image
 
     # Gauss Blur kernel size
@@ -18,9 +18,6 @@ def preworkAllDirs():
 
     preWork = PreWork.PreWork(g_kernel=k_size, ex_size=size, thresholds=thresholds)
 
-    preWork.all_resize_local(input_path=input_image)
-
-    input_image = 'C:\\Users\\NagyMiklosZoltan\\PycharmProjects\\Szakdolgozat2020\\RawImages\\horse-or-human\\validation\\'
     preWork.all_resize_local(input_path=input_image)
 
 preworkAllDirs()
