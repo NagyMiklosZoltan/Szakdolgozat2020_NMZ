@@ -143,11 +143,11 @@ model.add(Dropout(0.4))
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.RMSprop(lr=1e-4),
-              metrics=['acc'])
+              metrics=['acc', 'loss'])
 
 history = model.fit(train_data, train_labels,
                     epochs=120,
-                    batch_size=256,
+                    batch_size=128,
                     validation_data=(validation_data, validation_labels))
 print(history.history.keys())
 model.save_weights(top_model_weights_path)

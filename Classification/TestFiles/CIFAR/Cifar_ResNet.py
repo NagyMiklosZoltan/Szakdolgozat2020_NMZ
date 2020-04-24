@@ -1,23 +1,10 @@
-import pandas as pd
-import numpy as np
-import itertools
-import keras
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from keras.models import Sequential
-from keras import optimizers
-from keras.preprocessing import image
-from keras.models import Model
-from keras.layers import Dropout, Flatten, Dense, Input, LeakyReLU
+from keras.layers import Dropout, Flatten, Dense, Input, LeakyReLU, UpSampling2D, GlobalAveragePooling2D, \
+    BatchNormalization
 from keras.callbacks import ModelCheckpoint
-from keras import applications
-from keras.utils.np_utils import to_categorical
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import math
+from keras.applications import ResNet50
 import datetime
-import time
 
 from Classification.TestFiles.PlotResults import plot_history
 from Classification.TestFiles.setKerasSession import setKerasAllow_Groth_lof_device_placement
@@ -34,7 +21,7 @@ validation_data_dir = \
 
 start = datetime.datetime.now()
 
-batch_size =128
+batch_size = 4
 num_class = 10
 
 
@@ -54,35 +41,31 @@ valid_gen = datagen.flow_from_directory(
     class_mode='categorical',
     shuffle=False)
 
-m_Input = Input(shape=(img_width, img_height, 3))
-vgg16 = applications.VGG16(include_top=False,
-                           input_tensor=m_Input,
-                           weights='imagenet')
-# print(vgg16.summary())
+resnet_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
 
-for layer in vgg16.layers[:3]:
-    layer.trainable = False
+model = Sequential()
+model.add(UpSampling2D(input_shape=(img_width, img_height, 3)))
+model.add(UpSampling2D())
+model.add(UpSampling2D())
+model.add(resnet_model)
+model.add(GlobalAveragePooling2D())
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.25))
+model.add(BatchNormalization())
+model.add(Dense(num_class, activation='softmax'))
 
-print(vgg16.layers[-1].output)
-x = Flatten()(vgg16.layers[-1].output)
-x = Dense(100)(x)
-x = LeakyReLU(alpha=0.3)(x)
-x = Dropout(0.3)(x)
-x = Dense(50)(x)
-x = LeakyReLU(alpha=0.3)(x)
-x = Dropout(0.3)(x)
-last_layer = Dense(num_class, activation='softmax')(x)
-
-model = Model(inputs=vgg16.input, outputs=last_layer)
-
-print(model.summary())
+for layer in resnet_model.layers:
+    if isinstance(layer, BatchNormalization):
+        layer.trainable = True
+    else:
+        layer.trainable = False
 
 model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['acc'])
 
 # checkpoint
-filepath = "weights-improvement-{epoch:02d}-{val_loss:.2f}.hdf5"
+filepath = "cif10_res50_weights-improvement-{epoch:02d}-{val_loss:.2f}.hdf5"
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min', period=1)
 callbacks_list = [checkpoint]
 
@@ -92,14 +75,14 @@ num_valid = len(valid_gen.filenames)
 history = model.fit_generator(
     train_gen,
     steps_per_epoch=num_train // batch_size,
-    epochs=2000,
+    epochs=3,
     validation_data=valid_gen,
     validation_steps=num_valid // batch_size,
     callbacks=callbacks_list
 )
 
 print(history.history.keys())
-model.save_weights('model_Weights.h5')
+model.save_weights('model_Weights_Cifar10_Resnet50.h5')
 
 end = datetime.datetime.now()
 elapsed = end - start
