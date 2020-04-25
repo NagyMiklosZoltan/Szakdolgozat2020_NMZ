@@ -1,23 +1,13 @@
 import pandas as pd
 import numpy as np
-import itertools
-import keras
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from keras.models import Sequential
 from keras import optimizers
-from keras.preprocessing import image
 from keras.models import Model
 from keras.layers import Dropout, Flatten, Dense, Input, LeakyReLU
 from keras.callbacks import ModelCheckpoint
 from keras import applications
-from keras.utils.np_utils import to_categorical
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import math
 import datetime
-import time
 
 from Classification.TestFiles.PlotResults import plot_history
 from Classification.TestFiles.setKerasSession import setKerasAllow_Groth_lof_device_placement
@@ -80,15 +70,10 @@ model = Model(inputs=vgg16.input, outputs=last_layer)
 
 print(model.summary())
 
-learning_rate = 0.1
+learning_rate = 0.001
 lr_decay = 1e-6
 lr_drop = 20
 
-def lr_scheduler(epoch):
-    return learning_rate * (0.5 ** (epoch // lr_drop))
-
-
-reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
 sgd = optimizers.SGD(lr=learning_rate, decay=lr_decay, momentum=0.9, nesterov=True)
 
 model.compile(loss='categorical_crossentropy',
@@ -109,7 +94,7 @@ history = model.fit_generator(
     epochs=10,
     validation_data=valid_gen,
     validation_steps=num_valid // batch_size,
-    callbacks=[reduce_lr]
+    callbacks=callbacks_list
 )
 
 print(history.history.keys())
