@@ -75,7 +75,7 @@ num_valid = len(valid_gen.filenames)
 history = model.fit_generator(
     train_gen,
     steps_per_epoch=num_train // batch_size,
-    epochs=3,
+    epochs=10,
     validation_data=valid_gen,
     validation_steps=num_valid // batch_size,
     callbacks=callbacks_list

@@ -34,11 +34,14 @@ validation_data_dir = \
 
 start = datetime.datetime.now()
 
-batch_size =128
+batch_size = 128
 num_class = 10
 
-
-datagen = ImageDataGenerator(rescale=1. / 255)
+datagen = ImageDataGenerator(rescale=1. / 255,
+                             rotation_range=20,
+                             width_shift_range=0.1,
+                             height_shift_range=0.1,
+                             horizontal_flip=True)
 
 train_gen = datagen.flow_from_directory(
     train_data_dir,
@@ -77,8 +80,19 @@ model = Model(inputs=vgg16.input, outputs=last_layer)
 
 print(model.summary())
 
+learning_rate = 0.1
+lr_decay = 1e-6
+lr_drop = 20
+
+def lr_scheduler(epoch):
+    return learning_rate * (0.5 ** (epoch // lr_drop))
+
+
+reduce_lr = keras.callbacks.LearningRateScheduler(lr_scheduler)
+sgd = optimizers.SGD(lr=learning_rate, decay=lr_decay, momentum=0.9, nesterov=True)
+
 model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
+              optimizer=sgd,
               metrics=['acc'])
 
 # checkpoint
@@ -92,14 +106,15 @@ num_valid = len(valid_gen.filenames)
 history = model.fit_generator(
     train_gen,
     steps_per_epoch=num_train // batch_size,
-    epochs=2000,
+    epochs=10,
     validation_data=valid_gen,
     validation_steps=num_valid // batch_size,
-    callbacks=callbacks_list
+    callbacks=[reduce_lr]
 )
 
 print(history.history.keys())
 model.save_weights('model_Weights.h5')
+model.save("full_model_cifar_10class.hdf5")
 
 end = datetime.datetime.now()
 elapsed = end - start
