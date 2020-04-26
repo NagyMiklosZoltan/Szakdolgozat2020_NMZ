@@ -3,6 +3,8 @@ dataset_dir_dict = {
     'animals': r'G:\DataSets\animals10\raw-img',
     'hands': r'G:\DataSets\Hands',
     'human-faces': r'G:\DataSets\utk-face-cropped\utkcropped\utkcropped',
+    'object-scenes': r'G:\DataSets\Objects-scenes',
+    'fruits-veggies': r'G:\DataSets\fruits-veggies'
 }
 
 train_dir_dict = {
@@ -26,7 +28,7 @@ valid_dir_dict = {
     'animals':
         r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\ImageSet\validation\animals',
     'fruits-veggies':
-        r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\ImageSet\validation\fruit-veggie',
+        r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\ImageSet\validation\fruits-veggies',
     'hands':
         r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\ImageSet\validation\hands',
     'human-faces':
