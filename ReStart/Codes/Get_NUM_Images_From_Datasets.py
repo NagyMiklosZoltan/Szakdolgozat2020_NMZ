@@ -3,6 +3,7 @@ import os
 import shutil
 import math
 import cv2
+import numpy as np
 
 from ReStart.Codes.directories import dataset_dir_dict, train_dir_dict, valid_dir_dict
 
@@ -61,8 +62,17 @@ def copyResizedFilesTrainValid(src, dest_key, size):
     resizeImages(new_files, size)
 
 
+def sizeCheck(file_p, size_3):
+    img = cv2.imread(file)
+    if not np.shape(img) == size:
+        print(file)
+        print(np.shape(img))
+
+
+
 # **********************************************************************************************************
 # PROGRAM
+
 num_sample = getMinSample()
 
 for key in dataset_dir_dict.keys():
@@ -77,3 +87,12 @@ for key in dataset_dir_dict.keys():
     size = 175, 175
     copyResizedFilesTrainValid(src=sample, dest_key=key, size=size)
     print('***' + key + '***')
+
+# ResizeValidation
+for key in train_dir_dict.keys():
+    print('Current Class:' + key)
+    key_dir = train_dir_dict[key]
+    curr_images = getImagesWithPath(r=key_dir)
+    size = (175, 175, 3)
+    for file in curr_images:
+        sizeCheck(file, size)
