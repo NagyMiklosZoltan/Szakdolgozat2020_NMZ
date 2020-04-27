@@ -20,8 +20,8 @@ def plot_history(history):
     # plt.yscale('log')
     # plt.show()
 
-    training_accuracy = history.history['acc'][2:]
-    test_accuracy = history.history['val_acc'][2:]
+    training_accuracy = history.history['acc']
+    test_accuracy = history.history['val_acc']
 
     epoch_count = range(1, len(training_accuracy) + 1)
 

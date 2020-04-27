@@ -16,6 +16,7 @@ import matplotlib.image as mpimg
 import math
 import datetime
 import time
+import os
 
 from ReStart.Codes.PlotResults import plot_history
 from ReStart.Codes.setKerasSession import setKerasAllow_Groth_lof_device_placement

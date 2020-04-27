@@ -1,28 +1,18 @@
-import pandas as pd
 import numpy as np
-import itertools
 import keras
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix
-from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras import optimizers
-from keras.preprocessing import image
 from keras.layers import Dropout, Flatten, Dense
-from keras import applications
 from keras.utils.np_utils import to_categorical
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import math
 import datetime
-import time
 
 from ReStart.Codes.PlotResults import plot_history
 from ReStart.Codes.setKerasSession import setKerasAllow_Groth_lof_device_placement
-from ReStart.Codes.directories import dataset_dir_dict, train_dir_dict, valid_dir_dict
+from ReStart.Codes.directories import train_dir_dict, valid_dir_dict
 from ReStart.Codes.preTrain import preTraining
 
-# pretrain modell with vgg16 predictGenerator
+# # pretrain modell with vgg16 predictGenerator
 # preTraining()
 
 modelpath = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Models'
@@ -80,23 +70,38 @@ validation_labels = to_categorical(validation_labels, num_classes=num_classes)
 
 start = datetime.datetime.now()
 
+print('Meh')
+
 model = Sequential()
 model.add(Flatten(input_shape=train_data.shape[1:]))
-model.add(Dense(100, activation=keras.layers.LeakyReLU(alpha=0.3)))
+model.add(Dense(100))
+model.add(keras.layers.LeakyReLU(alpha=0.3))
 model.add(Dropout(0.3))
-model.add(Dense(50, activation=keras.layers.LeakyReLU(alpha=0.3)))
+model.add(Dense(50))
+model.add(keras.layers.LeakyReLU(alpha=0.3))
 model.add(Dropout(0.3))
 model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss='categorical_crossentropy',
               optimizer=optimizers.RMSprop(lr=1e-4),
-              metrics=['acc', 'loss'])
+              metrics=['acc'])
 
-history = model.fit(train_data, train_labels,
-                    epochs=10,
-                    batch_size=batch_size,
-                    validation_data=(validation_data, validation_labels))
+# history = model.fit(train_data, train_labels,
+#                     epochs=10,
+#                     batch_size=batch_size,
+#                     validation_data=(validation_data, validation_labels))
+
+
+history = model.fit_generator(generator=datagen.flow(train_data, train_labels, batch_size=batch_size),
+                              epochs=1000,
+                              steps_per_epoch=len(train_data) // batch_size,
+                              validation_data=datagen.flow(validation_data, validation_labels, batch_size=batch_size),
+                              validation_steps=len(validation_data) // batch_size)
+
+
 print(history.history.keys())
 model.save_weights(top_model_weights_path)
+
+model.save(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Models\Full_5_ClassModel.h5')
 
 (eval_loss, eval_accuracy) = model.evaluate(
     validation_data, validation_labels,

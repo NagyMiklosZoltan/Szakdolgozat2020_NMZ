@@ -5,7 +5,7 @@ import math
 import cv2
 import numpy as np
 
-from ReStart.Codes.directories import train_dir_dict, valid_dir_dict
+from ReStart.Codes.directories import dataset_dir_dict, train_dir_dict, valid_dir_dict
 
 
 # Returns unique random elements from a list
@@ -88,7 +88,7 @@ def sizeCheck(file_p, size_3):
 
 # Copy and Resize all datasets
 # num_sample = getMinSample()
-num_sample = 11000
+num_sample = 5000
 for key in dataset_dir_dict.keys():
     print('\tCurrent Class:' + key)
     key_dir = dataset_dir_dict[key]
