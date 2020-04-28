@@ -6,6 +6,7 @@ from keras import optimizers
 from keras.layers import Dropout, Flatten, Dense
 from keras.applications import VGG16
 from keras.callbacks import ModelCheckpoint
+from keras.models import Model
 
 
 from ReStart.Codes.directories import train_dir_dict, valid_dir_dict
@@ -39,25 +40,29 @@ shape = (175, 175, 3)
 
 vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=shape)
 
-for layer in vgg16.layers[:3]:
+# 10-> layer block3_pool (MaxPooling2D)   (None, 21, 21, 256)
+for layer in vgg16.layers[:10]:
     layer.trainable = False
+for layer in vgg16.layers:
+    print(layer.trainable)
 
-# sub_vgg16 = Sequential(vgg16.layers[:3])
+x = Flatten()(vgg16.layers[-1].output)
+x = Dense(256)(x)
+x = keras.layers.LeakyReLU(alpha=0.3)(x)
+x = Dropout(0.25)(x)
+x = Dense(256)(x)
+x = keras.layers.LeakyReLU(alpha=0.3)(x)
+x = Dropout(0.25)(x)
+x = Dense(50)(x)
+x = keras.layers.LeakyReLU(alpha=0.3)(x)
+x = Dropout(0.25)(x)
+x = Dense(5, activation='softmax')(x)
 
-# print(sub_vgg16.summary())
 
-model = Sequential()
-model.add(vgg16)
-model.add(Flatten())
-model.add(Dense(500))
-model.add(keras.layers.LeakyReLU(alpha=0.3))
-model.add(Dropout(0.1))
-model.add(Dense(50))
-model.add(keras.layers.LeakyReLU(alpha=0.3))
-model.add(Dropout(0.1))
-model.add(Dense(5, activation='softmax'))
+model = Model(inputs=vgg16.inputs, outputs=x)
+
 model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.RMSprop(lr=0.01, decay=1e-6),
+              optimizer=optimizers.RMSprop(lr=0.001, decay=1e-6),
               metrics=['acc'])
 
 print(model.summary())
@@ -65,7 +70,7 @@ print(model.summary())
 # checkpoint
 filepath = r"C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Weights\weights-improvement-{" \
            r"epoch:02d}-{val_loss:.2f}.hdf5 "
-checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=False, mode='min', period=10)
+checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min', period=1)
 callbacks_list = [checkpoint]
 
 history = model.fit_generator(generator=train_gen,
