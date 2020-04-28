@@ -35,7 +35,6 @@ validation_data_dir = \
 
 # number of epochs to train top model
 epochs = 7  # this has been changed after multiple model run
-# batch size used by flow_from_directory and predict_generator
 
 
 # Loading vgc16 model

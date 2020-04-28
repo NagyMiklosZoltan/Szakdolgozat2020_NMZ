@@ -42,33 +42,22 @@ vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=shape)
 for layer in vgg16.layers[:3]:
     layer.trainable = False
 
-for layer in vgg16.layers[3:]:
-    try:
-        print(layer.activation)
-        layer.activation = keras.layers.LeakyReLU(alpha=0.3)
-        print(layer.activation)
+# sub_vgg16 = Sequential(vgg16.layers[:3])
 
-    except:
-        print('No activation need')
-
-
-print(vgg16.summary())
+# print(sub_vgg16.summary())
 
 model = Sequential()
 model.add(vgg16)
 model.add(Flatten())
 model.add(Dense(500))
 model.add(keras.layers.LeakyReLU(alpha=0.3))
-model.add(Dropout(0.3))
-model.add(Dense(500))
-model.add(keras.layers.LeakyReLU(alpha=0.3))
-model.add(Dropout(0.3))
+model.add(Dropout(0.1))
 model.add(Dense(50))
 model.add(keras.layers.LeakyReLU(alpha=0.3))
-model.add(Dropout(0.3))
+model.add(Dropout(0.1))
 model.add(Dense(5, activation='softmax'))
 model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.RMSprop(lr=0.005, decay=1e-6),
+              optimizer=optimizers.RMSprop(lr=0.01, decay=1e-6),
               metrics=['acc'])
 
 print(model.summary())
