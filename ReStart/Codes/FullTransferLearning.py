@@ -3,7 +3,7 @@ import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras import optimizers
-from keras.layers import Dropout, Flatten, Dense
+from keras.layers import Dropout, Flatten, Dense, Conv2D, MaxPool2D
 from keras.applications import VGG16
 from keras.callbacks import ModelCheckpoint
 from keras.models import Model
@@ -43,10 +43,16 @@ vgg16 = VGG16(include_top=False, weights='imagenet', input_shape=shape)
 # 10-> layer block3_pool (MaxPooling2D)   (None, 21, 21, 256)
 for layer in vgg16.layers[:10]:
     layer.trainable = False
-for layer in vgg16.layers:
-    print(layer.trainable)
+# for layer in vgg16.layers:
+#     print(layer.trainable)
 
-x = Flatten()(vgg16.layers[-1].output)
+x = vgg16.layers[-1].output
+print(x)
+# x = Conv2D(filters=1024, kernel_size=(5, 5), strides=(2, 2))(x)
+# x = Conv2D(filters=1024, kernel_size=(3, 3), strides=(2, 2))(x)
+# # x = MaxPool2D(pool_size=(5, 5))
+
+x = Flatten()(x)
 x = Dense(256)(x)
 x = keras.layers.LeakyReLU(alpha=0.3)(x)
 x = Dropout(0.25)(x)
@@ -60,9 +66,11 @@ x = Dense(5, activation='softmax')(x)
 
 
 model = Model(inputs=vgg16.inputs, outputs=x)
-
+opt = optimizers.SGD(lr=0.01)
+# opt = optimizers.RMSprop(lr=0.00001)
+# opt = optimizers.Adam(lr=0.00001)
 model.compile(loss='categorical_crossentropy',
-              optimizer=optimizers.RMSprop(lr=0.001, decay=1e-6),
+              optimizer=opt,
               metrics=['acc'])
 
 print(model.summary())
@@ -77,7 +85,7 @@ history = model.fit_generator(generator=train_gen,
                               epochs=1000,
                               steps_per_epoch=len(train_gen.filenames) // batch_size,
                               validation_data=valid_gen,
-                              validation_steps=len(valid_gen.filenames) // batch_size,
-                              callbacks=callbacks_list)
+                              validation_steps=len(valid_gen.filenames) // batch_size)
+                              # callbacks=callbacks_list)
 
 plot_history(history)
