@@ -1,6 +1,6 @@
 import numpy as np
 import math
-
+import itertools
 
 # CREATE RANDOM TESTARRAY
 def createTestRDMs(z, im_num):
@@ -52,24 +52,19 @@ class ClassPair:
         return False
 
 
-def createClassPairs():
+def createClassPairs(num_class):
     pairs_ = []
     for i in range(10):
         x = ClassPair()
         pairs_.append(x)
 
-    pairs_[0].init(1, 2)
-    pairs_[1].init(1, 3)
-    pairs_[2].init(1, 4)
-    pairs_[3].init(1, 5)
-    pairs_[4].init(2, 3)
-    pairs_[5].init(2, 4)
-    pairs_[6].init(2, 5)
-    pairs_[7].init(3, 4)
-    pairs_[8].init(3, 5)
-    pairs_[9].init(4, 5)
+    numbers = [f for f in range(0, num_class)]
+    print(numbers)
+    combs = np.array(itertools.combinations(numbers, 2))
+    print(combs)
 
-    return pairs_
+
+    # return pairs_
 
 
 def chosePairIndex(pairs_, n1_: int, n2_: int):
@@ -79,29 +74,38 @@ def chosePairIndex(pairs_, n1_: int, n2_: int):
     return -1
 
 
+def GetSampleRDMAverages(sample, pairs):
+    for f in range(sample.shape[0]):
+        for i in range(sample.shape[1]):
+            for k in range(sample.shape[2]):
+                idx = chosePairIndex(pairs, i, k)
+                if not idx < 0:
+                    pairs[idx].addToSum(sample[f, i, k])
+
+    for fasz in pairs:
+        print(fasz.getAverage())
+
+    new_arr = np.zeros(shape=(sample.shape[1], sample.shape[2]))
+    for i in range(new_arr.shape[0]):
+        for k in range(new_arr.shape[1]):
+            idx = chosePairIndex(pairs, i, k)
+            if idx >= 0:
+                new_arr[i, k] = pairs[idx].getAverage()
+
+    return new_arr
+
+
 # ********************** PROGRAM ***********************
 
 arr = createTestRDMs(3, 8)
 prediction = shittyModelPrediction('Képeket átadjuk!')
+num_class = len(np.unique(prediction))
+pairs = createClassPairs(num_class)
 
-pairs = createClassPairs()
-
-for f in range(arr.shape[0]):
-    for i in range(arr.shape[1]):
-        for k in range(arr.shape[2]):
-            idx = chosePairIndex(pairs, i, k)
-            if not idx < 0:
-                pairs[idx].addToSum(arr[f, i, k])
-
-new_arr = np.empty(shape=(arr.shape[1], arr.shape[2]), dtype=float)
-for i in range(new_arr.shape[0]):
-    for k in range(new_arr.shape[1]):
-        idx = chosePairIndex(pairs, i, k)
-        if idx >= 0:
-            new_arr[i, k] = pairs[idx].getAverage()
-
-for i in range(new_arr.shape[0]):
-    for k in range(new_arr.shape[1]):
-        data = "{:.2f}".format(new_arr[i, k])
-        print(data.ljust(4, '0'), end='\t')
-    print()
+# new_arr = GetSampleRDMAverages(arr, pairs)
+# print(np.shape(new_arr))
+# for i in range(new_arr.shape[0]):
+#     for k in range(new_arr.shape[1]):
+#         data = "{:.2f}".format(new_arr[i, k])
+#         print(data.ljust(4, '0'), end='\t')
+#     print()

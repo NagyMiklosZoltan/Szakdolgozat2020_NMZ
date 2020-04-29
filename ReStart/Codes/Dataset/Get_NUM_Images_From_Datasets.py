@@ -5,7 +5,7 @@ import math
 import cv2
 import numpy as np
 
-from ReStart.Codes.directories import dataset_dir_dict, train_dir_dict, valid_dir_dict
+from ReStart.Codes.Dataset.directories import dataset_dir_dict, train_dir_dict, valid_dir_dict
 
 
 # Returns unique random elements from a list

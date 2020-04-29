@@ -7,13 +7,9 @@ from keras.layers import Dropout, Flatten, Dense
 from keras.utils.np_utils import to_categorical
 import datetime
 
-from ReStart.Codes.PlotResults import plot_history
-from ReStart.Codes.setKerasSession import setKerasAllow_Groth_lof_device_placement
-from ReStart.Codes.directories import train_dir_dict, valid_dir_dict
-from ReStart.Codes.preTrain import preTraining
+from ReStart.Codes.Visualization.PlotResults import plot_history
+from ReStart.Codes.Dataset.directories import train_dir_dict, valid_dir_dict
 
-# # pretrain modell with vgg16 predictGenerator
-# preTraining()
 
 modelpath = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Models'
 # Create a bottleneck file
