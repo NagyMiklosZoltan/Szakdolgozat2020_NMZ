@@ -87,8 +87,8 @@ def sizeCheck(file_p, size_3):
 #
 
 # Copy and Resize all datasets
-# num_sample = getMinSample()
-num_sample = 5000
+num_sample = getMinSample()
+
 for key in dataset_dir_dict.keys():
     print('\tCurrent Class:' + key)
     key_dir = dataset_dir_dict[key]
