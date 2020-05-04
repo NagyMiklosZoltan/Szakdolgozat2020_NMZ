@@ -59,7 +59,7 @@ def TrainModelClassification():
     x = Dense(256)(x)
     x = keras.layers.LeakyReLU(alpha=0.3)(x)
     x = Dropout(0.25)(x)
-    x = Dense(50)(x)
+    x = Dense(10)(x)
     x = keras.layers.LeakyReLU(alpha=0.3)(x)
     x = Dropout(0.25)(x)
     x = Dense(5, activation='softmax')(x)
@@ -85,10 +85,14 @@ def TrainModelClassification():
 
     history = model.fit_generator(generator=train_gen,
                                   epochs=10,
-                                  steps_per_epoch=100,
+                                  steps_per_epoch=len(train_gen.filenames) // batch_size,
                                   validation_data=valid_gen,
-                                  validation_steps=100,
+                                  validation_steps=len(valid_gen.filenames) // batch_size,
                                   callbacks=callbacks_list)
 
     plot_history(history)
     print('Learning finished!')
+
+
+# Futtatas
+TrainModelClassification()

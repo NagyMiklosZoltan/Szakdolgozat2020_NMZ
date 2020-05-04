@@ -37,11 +37,11 @@ class ClassPair:
         self.pair = [c_1, c_2]
 
     def addToSum(self, n):
-        self.sum += n
-        self.count += 1
+        self.sum = self.sum + 1.0
+        self.count = self.count + 1
 
     def getAverage(self):
-        avg = self.sum / self.count
+        avg = self.sum / float(self.count)
         return round(avg, 2)
 
     def itsTheOne(self, n1, n2):
@@ -51,44 +51,57 @@ class ClassPair:
             return True
         return False
 
+    def __str__(self):
+        return 'pár típus:' + str(self.pair)
+
 
 def createClassPairs(num_class):
+    numbers = [f for f in range(0, num_class)]
+    print(numbers)
+    combs = list(itertools.combinations(numbers, 2))
+
     pairs_ = []
     for i in range(10):
         x = ClassPair()
+        x.init(c_1=combs[i][0], c_2=combs[i][1])
         pairs_.append(x)
 
-    numbers = [f for f in range(0, num_class)]
-    print(numbers)
-    combs = np.array(itertools.combinations(numbers, 2))
-    print(combs)
-
-
-    # return pairs_
+    return pairs_
 
 
 def chosePairIndex(pairs_, n1_: int, n2_: int):
     for idx in range(np.shape(pairs_)[0]):
-        if pairs_[idx].itsTheOne(n1=n1_ + 1, n2=n2_ + 1):
+        if pairs_[idx].itsTheOne(n1=math.ceil(n1_), n2=math.ceil(n2_)):
             return idx
     return -1
 
-
-def GetSampleRDMAverages(sample, pairs):
+def GetSampleRDMAverages(sample, pairs, predictions):
+    counter = 0
     for f in range(sample.shape[0]):
         for i in range(sample.shape[1]):
             for k in range(sample.shape[2]):
-                idx = chosePairIndex(pairs, i, k)
+                num_1 = predictions[i]
+                num_2 = predictions[k]
+                idx = chosePairIndex(pairs, num_1, num_2)
                 if not idx < 0:
                     pairs[idx].addToSum(sample[f, i, k])
+                else:
+                    counter = counter + 1
+                    print((num_1, num_2, counter))
 
-    for fasz in pairs:
-        print(fasz.getAverage())
 
+
+    for f in pairs:
+        if (f.count <= 0):
+            print(f)
+
+    # Createing RDM of Averages
     new_arr = np.zeros(shape=(sample.shape[1], sample.shape[2]))
     for i in range(new_arr.shape[0]):
         for k in range(new_arr.shape[1]):
-            idx = chosePairIndex(pairs, i, k)
+            num_1 = predictions[i]
+            num_2 = predictions[k]
+            idx = chosePairIndex(pairs, num_1, num_2)
             if idx >= 0:
                 new_arr[i, k] = pairs[idx].getAverage()
 
@@ -102,8 +115,10 @@ prediction = shittyModelPrediction('Képeket átadjuk!')
 num_class = len(np.unique(prediction))
 pairs = createClassPairs(num_class)
 
-# new_arr = GetSampleRDMAverages(arr, pairs)
-# print(np.shape(new_arr))
+new_arr = GetSampleRDMAverages(arr, pairs, prediction)
+
+
+
 # for i in range(new_arr.shape[0]):
 #     for k in range(new_arr.shape[1]):
 #         data = "{:.2f}".format(new_arr[i, k])
