@@ -2,8 +2,25 @@ from keras.models import Model
 from keras.models import load_model
 from keras.layers import Dense, Dropout, LeakyReLU, Lambda, Input
 from keras import backend as kerasBackEnd
+from keras.optimizers import Adam
+from keras.losses import MSE
 
-model_path = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Weights\weights-improvement-02-0.05.hdf5'
+# own generator
+from ReStart.Codes.FullProjectModels.Generator import DataGenerator
+
+root = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020'
+
+
+trainX_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\92images.mat'
+trainY_path = root + r'\algonautsChallenge2019/Training_Data/92_Image_Set/target_fmri.mat'
+
+batch_size = 4
+
+train_gen = DataGenerator(x_path=trainX_path,
+                          y_path=trainY_path,
+                          batch_size=batch_size)
+
+model_path = root + r'\ReStart\Weights\weights-improvement-02-0.05.hdf5'
 my_model = load_model(model_path)
 
 # rewire model
@@ -42,5 +59,12 @@ last_layer = Dense(1, activation='sigmoid')(L1_distance)
 
 siameseNetwork = Model(inputs=[left_input, right_input], outputs=last_layer)
 
+siameseNetwork.compile(optimizer=Adam(lr=0.005),
+                       loss=MSE)
+
+steps_per_epoch = train_gen.samples_per_train
+
+history = siameseNetwork.fit_generator(generator=train_gen.generator(),
+                                       steps_per_epoch=steps_per_epoch)
 
 

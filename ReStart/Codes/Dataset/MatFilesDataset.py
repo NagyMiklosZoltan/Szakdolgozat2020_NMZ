@@ -27,7 +27,15 @@ def readMatImages(input):
     # print(np.shape(arr))
     arr = arr[0]['pixels']
     arr /= 255
-    return arr
+    re_arr = convertMatImagesToArray(arr)
+    return re_arr
+
+
+def convertMatImagesToArray(arr):
+    re_arr = np.ndarray((np.shape(arr)[0], 175, 175, 3))
+    for i in range(np.shape(arr)[0]):
+        np.append(re_arr, np.expand_dims(arr[i][:, :, :], axis=0), axis=0)
+    return re_arr
 
 
 def getIndexPairs(count):
@@ -35,16 +43,19 @@ def getIndexPairs(count):
     index_pairs = combinations(indexes, 2)
     return list(index_pairs)
 
-a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
-                      r'\Training_Data\92_Image_Set\target_fmri.mat')
-print(np.shape(a))
 
-
+# a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
+#                       r'\Training_Data\92_Image_Set\target_fmri.mat')
+# print(np.shape(a))
+#
+#
 b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
                   r'\92_Image_Set\92images.mat')
-print(b.dtype)
-print(np.shape(b[0]))
-print(len(getIndexPairs(92)))
+
+
+c = convertMatImagesToArray(b)
+print(type(c))
+print(np.shape(c))
 
 
 

@@ -1,23 +1,22 @@
 import numpy as np
+
 np.random.seed(1337)  # for reproducibility
 
-import random
-from keras.datasets import mnist
-from keras.models import Sequential, Model
-from keras.layers import Dense, Dropout, Input, Lambda
 from keras import backend as K
 from ReStart.Codes.Dataset.MatFilesDataset import *
 
-class DataGenerator(str, str, int):
+
+class DataGenerator(object):
     """docstring for DataGenerator"""
+
     def __init__(self, x_path: str, y_path: str, batch_size: int):
         self.batch_size = batch_size
         self.images = readMatImages(x_path)
         self.rdm = getAverageEVC_RDM(y_path)
         self.idx_pairs = getIndexPairs(self.rdm.shape[0])
         self.triplets = []
-        self.cur_train_index = 0
-        self.samples_per_train = 0
+        self.cur_train_index: int = 0
+        self.samples_per_train: int = (len(self.idx_pairs) // self.batch_size) * self.batch_size
 
     def create_triplets_Index(self):
         # create triplets from 2 images and 1 rdm cell data, with pair of indexes, with shuffle
@@ -28,12 +27,19 @@ class DataGenerator(str, str, int):
             trips.append((image_pair, self.rdm[x, y]))
         np.random.shuffle(trips)
         self.triplets = trips.copy()
-        self.samples_per_train = len(self.triplets)//self.batch_size
+        self.samples_per_train = len(self.triplets) // self.batch_size
 
-    def create_triplet_Train(self, element):
-        x, y = element[0], element[1]
+    def create_triplet(self, element):
+        x, y = element[0][0], element[0][1]
         image_pair = self.images[x], self.images[y]
-        return [image_pair], element[2]
+        return [image_pair], element[1]
+
+    def create_train_batch(self, min_idx: int, max_idx: int):
+        trips = []
+        for i in range(min_idx, max_idx):
+            one = self.create_triplet(self.triplets[i])
+            trips.append(one)
+        return trips
 
     def generator(self):
         """Recreate random shuffled triplets order"""
@@ -42,11 +48,9 @@ class DataGenerator(str, str, int):
             self.cur_train_index += self.batch_size
             if self.cur_train_index >= self.samples_per_train:
                 self.cur_train_index = 0
-
-            trip = self.create_triplet_Train(element=())
-            yield
-
-
+            max_train = self.cur_train_index + self.batch_size
+            trips = self.create_train_batch(self.cur_train_index, max_train)
+            yield trips
 
 
 def euclidean_distance(vects):
@@ -59,20 +63,8 @@ def eucl_dist_output_shape(shapes):
     return (shape1[0], 1)
 
 
-def contrastive_loss(y_true, y_pred):
-    '''Contrastive loss from Hadsell-et-al.'06
-    http://yann.lecun.com/exdb/publis/pdf/hadsell-chopra-lecun-06.pdf
-    '''
-    margin = 1
-    return K.mean(y_true * K.square(y_pred) + (1 - y_true) * K.square(K.maximum(margin - y_pred, 0)))
-
 
 def compute_accuracy(predictions, labels):
     '''Compute classification accuracy with a fixed threshold on distances.
     '''
     return labels[predictions.ravel() < 0.5].mean()
-
-
-
-
-
