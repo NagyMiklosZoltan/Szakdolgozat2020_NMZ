@@ -11,9 +11,11 @@ print(my_model.summary())
 
 count = len(my_model.layers)-7
 
+# az átvett régtegek befagyasztása
 for layer in my_model.layers[:count]:
     layer.trainable = False
 
+# Model kiegészítés és utolsó rétegek cseréje
 x = my_model.layers[-7].output
 x = Dense(100, name='Dense_new_1')(x)
 x = LeakyReLU(alpha=0.3, name='LeakyRelu_new_1')(x)
