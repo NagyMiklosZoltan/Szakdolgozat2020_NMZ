@@ -18,14 +18,15 @@ class DataGenerator(object):
         self.cur_train_index: int = 0
         self.samples_per_train: int = (len(self.idx_pairs) // self.batch_size) * self.batch_size
 
-    def create_triplets_Index(self):
+    def create_triplets_Index(self, shuffle: bool):
         # create triplets from 2 images and 1 rdm cell data, with pair of indexes, with shuffle
         trips = []
         for i in range(len(self.idx_pairs)):
             x, y = self.idx_pairs[i][0], self.idx_pairs[i][1]
             image_pair = x, y
             trips.append((image_pair, self.rdm[x, y]))
-        np.random.shuffle(trips)
+        if shuffle:
+            np.random.shuffle(trips)
         self.triplets = trips.copy()
         self.samples_per_train = len(self.triplets) // self.batch_size
 
@@ -55,9 +56,9 @@ class DataGenerator(object):
             rdm.append(self.rdm[x, y])
         return rdm
 
-    def generator(self):
+    def generator(self, shuffle: bool):
         """Recreate random shuffled triplets order"""
-        self.create_triplets_Index()
+        self.create_triplets_Index(shuffle)
         while 1:
             self.cur_train_index += self.batch_size
             if self.cur_train_index >= self.samples_per_train:
@@ -67,6 +68,7 @@ class DataGenerator(object):
             right = np.array(self.getRightImages(self.cur_train_index, max_train))
             y = np.array(self.getY_RDMS(self.cur_train_index, max_train))
             yield tuple(([left, right], y))
+
 
 
 def euclidean_distance(vects):

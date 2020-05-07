@@ -50,12 +50,11 @@ def getIndexPairs(count):
 #                       r'\Training_Data\92_Image_Set\target_fmri.mat')
 # print(np.shape(a))
 #
+# #
+# b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
+#                   r'\92_Image_Set\92images.mat')
 #
-b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
-                  r'\92_Image_Set\92images.mat')
 
-print(b)
-print(np.shape(b))
 
 
 
