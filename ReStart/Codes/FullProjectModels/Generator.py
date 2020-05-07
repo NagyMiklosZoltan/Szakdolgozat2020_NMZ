@@ -3,7 +3,7 @@ import numpy as np
 np.random.seed(1337)  # for reproducibility
 
 from keras import backend as K
-from ReStart.Codes.Dataset.MatFilesDataset import *
+from ReStart.Codes.Dataset.MatFilesDataset import readMatImages, getAverageEVC_RDM, getIndexPairs
 
 
 class DataGenerator(object):
@@ -32,14 +32,28 @@ class DataGenerator(object):
     def create_triplet(self, element):
         x, y = element[0][0], element[0][1]
         image_pair = self.images[x], self.images[y]
-        return [image_pair], element[1]
+        return image_pair, element[1]
 
-    def create_train_batch(self, min_idx: int, max_idx: int):
-        trips = []
+    def getLeftImages(self, min_idx: int, max_idx: int):
+        left: list = []
         for i in range(min_idx, max_idx):
-            one = self.create_triplet(self.triplets[i])
-            trips.append(one)
-        return trips
+            x = self.idx_pairs[i][0]
+            left.append(self.images[x])
+        return left
+
+    def getRightImages(self,min_idx: int, max_idx: int):
+        right: list = []
+        for i in range(min_idx, max_idx):
+            y = self.idx_pairs[i][1]
+            right.append(self.images[y])
+        return right
+
+    def getY_RDMS(self, min_idx: int, max_idx: int):
+        rdm: list = []
+        for i in range(min_idx, max_idx):
+            x, y = self.idx_pairs[i][0], self.idx_pairs[i][1]
+            rdm.append(self.rdm[x, y])
+        return rdm
 
     def generator(self):
         """Recreate random shuffled triplets order"""
@@ -49,8 +63,10 @@ class DataGenerator(object):
             if self.cur_train_index >= self.samples_per_train:
                 self.cur_train_index = 0
             max_train = self.cur_train_index + self.batch_size
-            trips = self.create_train_batch(self.cur_train_index, max_train)
-            yield trips
+            left = np.array(self.getLeftImages(self.cur_train_index, max_train))
+            right = np.array(self.getRightImages(self.cur_train_index, max_train))
+            y = np.array(self.getY_RDMS(self.cur_train_index, max_train))
+            yield tuple(([left, right], y))
 
 
 def euclidean_distance(vects):

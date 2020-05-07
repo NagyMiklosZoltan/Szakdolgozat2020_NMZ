@@ -1,6 +1,7 @@
 import h5py
 import numpy as np
 import scipy.io as ScIO
+import cv2
 from itertools import combinations
 
 
@@ -34,7 +35,8 @@ def readMatImages(input):
 def convertMatImagesToArray(arr):
     re_arr = np.ndarray((np.shape(arr)[0], 175, 175, 3))
     for i in range(np.shape(arr)[0]):
-        np.append(re_arr, np.expand_dims(arr[i][:, :, :], axis=0), axis=0)
+        resized = cv2.resize(arr[i], dsize=(175, 175))
+        re_arr[i] = resized.copy()
     return re_arr
 
 
@@ -52,10 +54,10 @@ def getIndexPairs(count):
 b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
                   r'\92_Image_Set\92images.mat')
 
+print(b)
+print(np.shape(b))
 
-c = convertMatImagesToArray(b)
-print(type(c))
-print(np.shape(c))
+
 
 
 
