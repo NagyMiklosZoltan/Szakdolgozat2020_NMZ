@@ -13,7 +13,7 @@ def GetPrediction(image_path, model_path):
     images: list = []
     for im in image_list:
         img = cv2.imread(im)
-        img = np.reshape(img, [175, 175, 3])
+        img = cv2.resize(img, (175, 175))
         images.append(img)
 
     data = np.array(images)

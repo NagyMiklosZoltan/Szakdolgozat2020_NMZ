@@ -53,6 +53,8 @@ def calculateClassAverages(rdm: np.ndarray, preds):
                     if c.amITheOne(preds[i], preds[k]):
                         c.addToAverage(rdm[i, k])
                         break
+    for c in class_pairs:
+        print(c.getCellAverage())
     """Create rdm from averages"""
     for i in range(shape):
         for k in range(shape):

@@ -48,11 +48,9 @@ def getIndexPairs(count):
     return list(index_pairs)
 
 
-
-
-a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
-                      r'\Training_Data\92_Image_Set\target_fmri.mat')
-print(np.shape(a))
+# a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
+#                       r'\Training_Data\92_Image_Set\target_fmri.mat')
+# print(np.shape(a))
 #
 # #
 # b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
