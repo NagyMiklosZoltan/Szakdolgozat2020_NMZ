@@ -3,7 +3,7 @@ from keras.models import load_model
 from keras.layers import Dense, Dropout, LeakyReLU, Lambda, Input
 import keras.backend
 from keras.optimizers import Adam, Adagrad
-from keras.losses import MSE
+from keras.losses import MSE, MAE
 
 # own generator
 from ReStart.Codes.FullProjectModels.Generator import DataGenerator
@@ -64,11 +64,12 @@ last_layer = Dense(1, activation='sigmoid')(L1_distance)
 
 siameseNetwork = Model(inputs=[left_input, right_input], outputs=last_layer)
 
-opt = Adagrad()
-# opt = Adam(lr=0.005)
-
+# opt = Adagrad()
+opt = Adam(lr=0.00005)
+ls = MAE
+# ls = MSE
 siameseNetwork.compile(optimizer=opt,
-                       loss=MSE)
+                       loss=ls)
 
 steps_per_epoch = train_gen.samples_per_train // batch_size
 print(steps_per_epoch)
@@ -76,14 +77,14 @@ print(steps_per_epoch)
 
 valid_steps = valid_gen.samples_per_train // batch_size
 history = siameseNetwork.fit_generator(generator=train_gen.generator(True),
-                                       epochs=1,
+                                       epochs=20,
                                        steps_per_epoch=steps_per_epoch,
                                        validation_data=valid_gen.generator(True),
-                                       validation_steps=valid_steps)
+                                       validation_steps=20)
 
-siameseNetwork.save('SiameseSave.hdf5')
-
-preds = siameseNetwork.predict_generator(train_gen.generator(False), steps=train_gen.samples_per_train)
-print(preds)
-print(preds.max())
-print(preds.min())
+# siameseNetwork.save('SiameseSave.hdf5')
+#
+# preds = siameseNetwork.predict_generator(train_gen.generator(False), steps=train_gen.samples_per_train)
+# print(preds)
+# print(preds.max())
+# print(preds.min())

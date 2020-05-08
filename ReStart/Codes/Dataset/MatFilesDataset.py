@@ -2,7 +2,8 @@ import h5py
 import numpy as np
 import scipy.io as ScIO
 import cv2
-from itertools import combinations
+from itertools import combinations, combinations_with_replacement
+import numpy as np
 
 
 def getAverageEVC_RDM(input):
@@ -42,13 +43,16 @@ def convertMatImagesToArray(arr):
 
 def getIndexPairs(count):
     indexes = [i for i in range(count)]
-    index_pairs = combinations(indexes, 2)
+    # index_pairs = combinations(indexes, 2)
+    index_pairs = combinations_with_replacement(indexes, 2)
     return list(index_pairs)
 
 
-# a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
-#                       r'\Training_Data\92_Image_Set\target_fmri.mat')
-# print(np.shape(a))
+
+
+a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'
+                      r'\Training_Data\92_Image_Set\target_fmri.mat')
+print(np.shape(a))
 #
 # #
 # b = readMatImages(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019\Training_Data'
