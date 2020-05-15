@@ -20,6 +20,16 @@ def getAverageEVC_RDM(input):
     return average
 
 
+def getFirstRealEVC_RDM(input):
+    fMRI_mat = input
+    fMRI = h5py.File(fMRI_mat, 'r')
+    # print(fMRI.keys())
+
+    data = fMRI.get('EVC_RDMs')
+    data = np.array(data)
+
+    return data[:, :, 0]
+
 def readMatImages(input):
     im_mat = input
     imgs = ScIO.loadmat(im_mat)
@@ -45,7 +55,9 @@ def getIndexPairs(count):
     indexes = [i for i in range(count)]
     # index_pairs = combinations(indexes, 2)
     index_pairs = combinations_with_replacement(indexes, 2)
-    return list(index_pairs)
+    index_pairs = list(index_pairs)
+    print(index_pairs)
+    return index_pairs
 
 
 # a = getAverageEVC_RDM(r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\algonautsChallenge2019'

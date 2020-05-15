@@ -38,6 +38,7 @@ def createClassPairs(preds):
 
     return class_pairs
 
+
 def calculateClassAverages(rdm: np.ndarray, preds):
     cl_rdm = rdm.copy()
     class_pairs = createClassPairs(preds)
