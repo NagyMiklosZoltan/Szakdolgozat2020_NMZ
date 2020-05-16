@@ -13,7 +13,7 @@ from ReStart.Codes.Classification.setKerasSession import setKerasAllow_Groth_lof
 
 
 def TrainModelClassification():
-    setKerasAllow_Groth_lof_device_placement()
+    # setKerasAllow_Groth_lof_device_placement()
 
     train_data_dir = train_dir_dict['base_dir']
     validation_data_dir = valid_dir_dict['base_dir']
@@ -73,7 +73,6 @@ def TrainModelClassification():
                   metrics=['acc'])
 
     print(model.summary())
-
     # checkpoint
     filepath = r"C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Weights\weights-improvement-{" \
                r"epoch:02d}-{val_loss:.2f}.hdf5 "
@@ -84,15 +83,14 @@ def TrainModelClassification():
     plot = PlotLearning()
 
     history = model.fit_generator(generator=train_gen,
-                                  epochs=10,
-                                  steps_per_epoch=len(train_gen.filenames) // batch_size,
+                                  epochs=40,
+                                  steps_per_epoch=10,
                                   validation_data=valid_gen,
-                                  validation_steps=len(valid_gen.filenames) // batch_size,
-                                  callbacks=callbacks_list)
+                                  validation_steps=10)
 
     plot_history(history)
     print('Learning finished!')
-
-
-# Futtatas
+#
+#
+# # Futtatas
 TrainModelClassification()
