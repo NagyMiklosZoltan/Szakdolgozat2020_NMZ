@@ -59,7 +59,7 @@ def calculateRS(A, B):
     print('B_ds_sum:\t', end='')
     print(B_ds_sum)
 
-    R_squared = B_ds_sum / A_ds_sum
+    R_squared = 1 - B_ds_sum / A_ds_sum
     print('R_Squared:\t', end='')
     print(R_squared)
 
@@ -76,8 +76,8 @@ def calculateRS(A, B):
 # SCORE CALCULATION
 # **********************************************************************************************************************
 
-# actual_Data = getAverageEVC_RDM(trainY_path)
-actual_Data = getFirstRealEVC_RDM(trainY_path)
+actual_Data = getAverageEVC_RDM(trainY_path)
+# actual_Data = getFirstRealEVC_RDM(trainY_path)
 preds = getPrediction()
 
 pred_Data = convertPredsToFull(preds)

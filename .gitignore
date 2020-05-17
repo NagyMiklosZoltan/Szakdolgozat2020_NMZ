@@ -7,6 +7,6 @@ algonautsChallenge2019/Training_Data/92_Image_Set/92images/image_83.jpg
 *.hdf5
 ReStart/Weights/weights-improvement-02-0.05.hdf5
 *.hdf5
-ReStart/Codes/FullProjectModels/SiameseSave.hdf5
-ReStart/Codes/FullProjectModels/SiameseSave.hdf5
+ReStart/Codes/FullProjectModels/SiameseSave_abs.hdf5
+ReStart/Codes/FullProjectModels/SiameseSave_abs.hdf5
 ReStart/Weights/weights-improvement-02-0.05.hdf5

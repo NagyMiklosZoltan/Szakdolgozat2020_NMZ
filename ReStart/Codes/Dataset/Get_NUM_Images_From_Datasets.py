@@ -24,7 +24,7 @@ def getMinSample():
         min_s = min(min_s, count)
 
     # round down min_sample with two decimal places
-    return math.ceil(min_s // 100)
+    return math.ceil(min_s // 100)*100
 
 
 def getRandomFiles(files, k):
@@ -88,7 +88,8 @@ def sizeCheck(file_p, size_3):
 
 # Copy and Resize all datasets
 num_sample = getMinSample()
-
+print('Min Sample:', end='')
+print(num_sample)
 for key in dataset_dir_dict.keys():
     print('\tCurrent Class:' + key)
     key_dir = dataset_dir_dict[key]

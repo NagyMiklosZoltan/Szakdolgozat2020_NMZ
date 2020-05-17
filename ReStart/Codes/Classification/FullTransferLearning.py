@@ -18,7 +18,10 @@ def TrainModelClassification():
     train_data_dir = train_dir_dict['base_dir']
     validation_data_dir = valid_dir_dict['base_dir']
     img_width, img_height = 175, 175
-    datagen = ImageDataGenerator(rescale=1. / 255)
+    datagen = ImageDataGenerator(rescale=1. / 255,
+                                 horizontal_flip=True,
+                                 rotation_range=20
+                                 )
 
     batch_size = 32
 
@@ -83,13 +86,16 @@ def TrainModelClassification():
     plot = PlotLearning()
 
     history = model.fit_generator(generator=train_gen,
-                                  epochs=40,
-                                  steps_per_epoch=10,
+                                  epochs=10,
+                                  steps_per_epoch=len(train_gen.filenames) // batch_size,
                                   validation_data=valid_gen,
-                                  validation_steps=10)
+                                  validation_steps=len(valid_gen.filenames) // batch_size,
+                                  callbacks=callbacks_list)
 
     plot_history(history)
     print('Learning finished!')
+
+
 #
 #
 # # Futtatas
