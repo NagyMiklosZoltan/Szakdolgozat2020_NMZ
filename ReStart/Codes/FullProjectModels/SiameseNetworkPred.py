@@ -44,14 +44,14 @@ my_model = load_model(model_path)
 # rewire model
 print(my_model.summary())
 
-count = len(my_model.layers) - 10
+count = len(my_model.layers) - 7
 
 # az átvett régtegek befagyasztása
 for layer in my_model.layers[:count]:
     layer.trainable = False
 
 # Model kiegészítés és utolsó rétegek cseréje
-x = my_model.layers[-5].output
+x = my_model.layers[-7].output
 x = Dense(100, name='Dense_new_1')(x)
 x = LeakyReLU(alpha=0.3, name='LeakyRelu_new_1')(x)
 x = Dropout(0.4, name='Dropout_new_1')(x)
@@ -72,10 +72,10 @@ right_input = Input(shape=(175, 175, 3))
 left_wing = model(left_input)
 right_wing = model(right_input)
 
-# L1_layer = Lambda(lambda tensors: K.abs(tensors[0] - tensors[1]))
-# L1_distance = L1_layer([left_wing, right_wing])
-
-L1_distance = Lambda(euclidean_distance, output_shape=eucl_dist_output_shape)([left_wing, right_wing])
+L1_layer = Lambda(lambda tensors: K.abs(tensors[0] - tensors[1]))
+L1_distance = L1_layer([left_wing, right_wing])
+#
+# L1_distance = Lambda(euclidean_distance, output_shape=eucl_dist_output_shape)([left_wing, right_wing])
 
 last_layer = Dense(1, activation='sigmoid')(L1_distance)
 
@@ -95,7 +95,7 @@ print(steps_per_epoch)
 valid_steps = valid_gen.samples_per_train // batch_size
 
 # checkpoint
-filepath = r"Siamese_weights-improvement-{epoch:02d}-{val_loss:.2f}.hdf5 "
+filepath = r"Siamese_N__weights-improvement-{epoch:02d}-{val_loss:.2f}.hdf5 "
 checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=False, mode='min', period=1)
 callbacks_list = [checkpoint]
 

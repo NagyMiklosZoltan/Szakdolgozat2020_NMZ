@@ -90,6 +90,6 @@ print('Absolute Siamise network:')
 calculateRS(actual_Data, pred_Data)
 
 preds = getPrediction(new_model=True)
-print('Absolute Siamise network:')
+print('Euc Siamise network:')
 pred_Data = convertPredsToFull(preds)
 calculateRS(actual_Data, pred_Data)

@@ -25,10 +25,10 @@ def getPrediction(new_model : bool):
     preds = my_model.predict_generator(test_gen.generator(False), steps=len(test_gen.idx_pairs))
 
     preds: list = [f[0] for f in preds]
-    print('Pred length:\t', end='')
-    print(len(preds))
-    print('Predictions:\t', end='')
-    print(preds)
+    # print('Pred length:\t', end='')
+    # print(len(preds))
+    # print('Predictions:\t', end='')
+    # print(preds)
 
     return preds
 
