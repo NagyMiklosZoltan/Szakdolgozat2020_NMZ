@@ -6,13 +6,15 @@ root = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020'
 trainY_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\target_fmri.mat'
 
 
-def getPrediction():
-    my_model = load_model(
-        r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\SiameseSave.hdf5',
-        custom_objects={'keras': keras})
-    # my_model = load_model(
-    #     r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\Siamese_weights-improvement-08-0.04.hdf5',
-    #     custom_objects={'keras': keras})
+def getPrediction(new_model : bool):
+    if new_model:
+        my_model = load_model(
+            r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\Siamese_weights-improvement-08-0.04.hdf5',
+            custom_objects={'keras': keras})
+    else:
+        my_model = load_model(
+            r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\SiameseSave.hdf5',
+            custom_objects={'keras': keras})
 
     trainX_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\92images.mat'
 

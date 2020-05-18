@@ -38,51 +38,58 @@ def convertPredsToFull(preds: list):
 
 
 def calculateRS(A, B):
-    # R Squared calculation
-    A_mean = np.mean(A)
+    # # R Squared calculation
+    # A_mean = np.mean(A)
+    #
+    # # Actual values to A_mean
+    # A_dif = A - A_mean
+    # A_dif_squared = np.square(A_dif)
+    #
+    # # Sum of Squared A_Dif values
+    # A_ds_sum = np.sum(A_dif_squared)
+    # print('A_ds_sum:\t', end='')
+    # print(A_ds_sum)
+    #
+    # # Estimated values to A_mean
+    # B_dif = B - A_mean
+    # B_dif_squared = np.square(B_dif)
+    #
+    # # Sum of Squared A_Dif values
+    # B_ds_sum = np.sum(B_dif_squared)
+    # print('B_ds_sum:\t', end='')
+    # print(B_ds_sum)
+    #
+    # R_squared = 1 - B_ds_sum / A_ds_sum
+    # print('R_Squared:\t', end='')
+    # print(R_squared)
+    #
+    # subs = []
+    # for i in range(len(A)):
+    #     subs.append(np.abs(A[i] - B[i]))
+    #
+    # score = np.mean(subs) * 100
+    # print('Score: ', end='')
+    # print(score)
 
-    # Actual values to A_mean
-    A_dif = A - A_mean
-    A_dif_squared = np.square(A_dif)
-
-    # Sum of Squared A_Dif values
-    A_ds_sum = np.sum(A_dif_squared)
-    print('A_ds_sum:\t', end='')
-    print(A_ds_sum)
-
-    # Estimated values to A_mean
-    B_dif = B - A_mean
-    B_dif_squared = np.square(B_dif)
-
-    # Sum of Squared A_Dif values
-    B_ds_sum = np.sum(B_dif_squared)
-    print('B_ds_sum:\t', end='')
-    print(B_ds_sum)
-
-    R_squared = 1 - B_ds_sum / A_ds_sum
-    print('R_Squared:\t', end='')
-    print(R_squared)
-
-    subs = []
-    for i in range(len(A)):
-        subs.append(np.abs(A[i] - B[i]))
-
-    score = np.mean(subs) * 100
-    print('Score: ', end='')
-    print(score)
+    spearman_correlation = spearmanr(A.flatten(), B.flatten())
+    print(spearman_correlation)
 
 
 # **********************************************************************************************************************
 # SCORE CALCULATION
 # **********************************************************************************************************************
 
-actual_Data = getAverageEVC_RDM(trainY_path)
-# actual_Data = getFirstRealEVC_RDM(trainY_path)
-preds = getPrediction()
+# actual_Data = getAverageEVC_RDM(trainY_path)
+actual_Data = getFirstRealEVC_RDM(trainY_path)
+preds = getPrediction(new_model=False)
+
 
 pred_Data = convertPredsToFull(preds)
 
-# print(actual_Data)
-# print(pred_Data)
+print('Absolute Siamise network:')
+calculateRS(actual_Data, pred_Data)
 
+preds = getPrediction(new_model=True)
+print('Absolute Siamise network:')
+pred_Data = convertPredsToFull(preds)
 calculateRS(actual_Data, pred_Data)
