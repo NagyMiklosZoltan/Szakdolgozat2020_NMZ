@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.random import randint
 from scipy.stats import spearmanr
-from ReStart.Codes.RDM.predictRDM import getPrediction, root, trainY_path
+from ReStart.Codes.RDM.predictRDM import getPrediction, root
 from ReStart.Codes.Dataset.MatFilesDataset import getAverageEVC_RDM, getFirstRealEVC_RDM
 
 count = 10
@@ -20,16 +20,17 @@ def generateTestData():
     return A, B
 
 
-def convertPredsToFull(preds: list):
+def convertPredsToFull(preds: list, size):
     count = 0
-    full = np.empty((92, 92), float)
-    for i in range(92):
-        for k in range(i, 92):
+    full = np.empty(size, float)
+    for i in range(size[0]):
+        for k in range(i, size[0]):
             if i == k:
                 full[i, k] = 0.0
             else:
                 full[i, k] = preds[count]
                 full[k, i] = preds[count]
+                # print(str(i) + '-' + str(k) + ' = ' + str(count))
             count = count + 1
 
     print('Full:', end='')
@@ -79,17 +80,22 @@ def calculateRS(A, B):
 # SCORE CALCULATION
 # **********************************************************************************************************************
 
-# actual_Data = getAverageEVC_RDM(trainY_path)
-actual_Data = getFirstRealEVC_RDM(trainY_path)
-preds = getPrediction(new_model=False)
+trainY_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\target_fmri.mat'
+size = 92, 92
+
+# actual_Data = getFirstRealEVC_RDM(trainY_path)
+actual_Data = getAverageEVC_RDM(trainY_path)
 
 
-pred_Data = convertPredsToFull(preds)
+preds = getPrediction(new_model=False, dataset='92')
+pred_Data = convertPredsToFull(preds, size=size)
 
-print('Absolute Siamise network:')
+print('Absolute Siamise network 92 Ave:')
 calculateRS(actual_Data, pred_Data)
 
-preds = getPrediction(new_model=True)
-print('Euc Siamise network:')
-pred_Data = convertPredsToFull(preds)
+preds = getPrediction(new_model=True, dataset='92')
+pred_Data = convertPredsToFull(preds, size=size)
+
+print('Euc Siamise network 92 Ave:')
 calculateRS(actual_Data, pred_Data)
+

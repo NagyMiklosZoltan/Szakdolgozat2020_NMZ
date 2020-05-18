@@ -3,10 +3,8 @@ from ReStart.Codes.FullProjectModels.Generator import DataGenerator
 import keras
 
 root = r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020'
-trainY_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\target_fmri.mat'
 
-
-def getPrediction(new_model : bool):
+def getPrediction(new_model : bool, dataset: str):
     if new_model:
         my_model = load_model(
             r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\Siamese_weights-improvement-08-0.04.hdf5',
@@ -16,7 +14,12 @@ def getPrediction(new_model : bool):
             r'C:\Users\NagyMiklosZoltan\PycharmProjects\Szakdolgozat2020\ReStart\Codes\FullProjectModels\SiameseSave.hdf5',
             custom_objects={'keras': keras})
 
-    trainX_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\92images.mat'
+    if dataset == '92':
+        trainX_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\92images.mat'
+        trainY_path = root + r'\algonautsChallenge2019\Training_Data\92_Image_Set\target_fmri.mat'
+    else:
+        trainY_path = root + r'\algonautsChallenge2019\Training_Data\118_Image_Set\target_fmri.mat'
+        trainX_path = root + r'\algonautsChallenge2019\Training_Data\118_Image_Set\118images.mat'
 
     test_gen = DataGenerator(x_path=trainX_path,
                              y_path=trainY_path,
